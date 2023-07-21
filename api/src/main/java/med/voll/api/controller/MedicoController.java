@@ -1,6 +1,7 @@
 package med.voll.api.controller;
 
 
+import jakarta.validation.Valid;
 import med.voll.api.endereco.Endereco;
 import med.voll.api.medico.DadosCadastroMedico;
 import med.voll.api.medico.Medico;
@@ -21,7 +22,8 @@ public class MedicoController {
 
     @PostMapping
     @Transactional
-    public void cadastrar(@RequestBody DadosCadastroMedico dados){ //request body para informar que está vindo no corpo da requisição o parametro
+    public void cadastrar(@RequestBody @Valid DadosCadastroMedico dados){ //request body para informar que está vindo no corpo da requisição o parametro
+        //@Valid para o Spring se integrar com o Bean Validation
         repository.save(new Medico(dados));
     }
 
