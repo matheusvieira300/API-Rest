@@ -17,7 +17,7 @@ import java.util.List;
 @RequestMapping("/medicos")
 public class MedicoController {
 
-    @Autowired //para instancia automaticamente
+    @Autowired //para instanciar automaticamente
     private MedicoRepository repository;
 
     @PostMapping
@@ -30,7 +30,7 @@ public class MedicoController {
     @GetMapping
     public Page<DadosListagemMedico> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao){//pageable classe do spring para paginação
         //@PageableDefault caso não for passado nenhum parametro na URL para realizar o padrão das páginas
-        return repository.findAll(paginacao).map(DadosListagemMedico::new);// metodo listar convertendo uma lista de médico
+        return repository.findAllByAtivoTrue(paginacao).map(DadosListagemMedico::new);// metodo listar convertendo uma lista de médico
         //para DadosListagemMedico
     }
 
@@ -40,6 +40,13 @@ public class MedicoController {
         var medico = repository.getReferenceById(dados.id());
         medico.atualizarInformacoes(dados);// chamando o método para atualizar os dados baseado no DTO
 
+    }
+
+    @DeleteMapping("/{id}")//parâmetro dinâmico para o spring reconhecer {}
+    @Transactional
+    public void excluir(@PathVariable Long id){//@PathVariable para dizer que é uma váriavel da url acima
+        var medico = repository.getReferenceById(id);
+        medico.excluir();
     }
 
 }
