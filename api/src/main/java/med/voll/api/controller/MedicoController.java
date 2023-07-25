@@ -11,11 +11,12 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/medicos")
+@RequestMapping("medicos")
 public class MedicoController {
 
     @Autowired //para instanciar automaticamente
@@ -23,14 +24,19 @@ public class MedicoController {
 
     @PostMapping
     @Transactional
-    public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroMedico dados){ //request body para informar que está vindo no corpo da requisição o parametro
+    public ResponseEntity cadastrar(@RequestBody @Valid DadosCadastroMedico dados, UriComponentsBuilder uriBuilder){
+        //UriComponentsBuilder classe do spring que sabe gerar uma Uri
+        //request body para informar que está vindo no corpo da requisição o parametro
         //@Valid para o Spring se integrar com o Bean Validation
-        repository.save(new Medico(dados));
+        var medico = new Medico(dados);
+        repository.save(medico);
 
-        var uri = "";
+        var uri = uriBuilder.path("/medicos/{id}").buildAndExpand(medico.getId()).toUri();//uma forma de utilizar pathvariable
 
-        return ResponseEntity.created(uri).body(dto);
-    }
+        return ResponseEntity.created(uri).body(new DadosDetalhamentoMedico(medico));
+    }//implementado o código 201
+
+
 
     @GetMapping
     public ResponseEntity <Page<DadosListagemMedico>> listar(@PageableDefault(size = 10, sort = {"nome"}) Pageable paginacao){//pageable classe do spring para paginação
@@ -61,6 +67,14 @@ public class MedicoController {
         medico.excluir();
 
         return ResponseEntity.noContent().build(); // para devolver o status 204 sem conteúdo
+    }
+
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity detalhar(@PathVariable Long id){
+        var medico = repository.getReferenceById(id);
+        return ResponseEntity.ok(new DadosDetalhamentoMedico(medico));
     }
 
 }
