@@ -1,26 +1,25 @@
 package med.voll.api.domain.paciente;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import med.voll.api.domain.endereco.Endereco;
 
 
+@Table(name = "pacientes")
+@Entity(name = "Paciente")
 @Getter
-@Setter
-@Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(of = "id")
 public class Paciente {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String nome;
     private String email;
+
     private String telefone;
+
     private String cpf;
 
     @Embedded
@@ -35,25 +34,23 @@ public class Paciente {
         this.telefone = dados.telefone();
         this.cpf = dados.cpf();
         this.endereco = new Endereco(dados.endereco());
-
     }
 
     public void atualizarInformacoes(DadosAtualizacaoPaciente dados) {
-        if(dados.nome() != null) {
+        if (dados.nome() != null) {
             this.nome = dados.nome();
         }
-        if(dados.email() != null) {
-            this.email = dados.email();
-        }
-        if(dados.telefone() != null) {
+        if (dados.telefone() != null) {
             this.telefone = dados.telefone();
         }
-        if(dados.endereco() != null) {
-            this.endereco.atualizarInformacoes (dados.endereco());
+        if (dados.endereco() != null) {
+            this.endereco.atualizarInformacoes(dados.endereco());
         }
 
     }
+
     public void excluir() {
         this.ativo = false;
     }
 }
+

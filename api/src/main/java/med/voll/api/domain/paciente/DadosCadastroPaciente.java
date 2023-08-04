@@ -18,7 +18,7 @@ public record DadosCadastroPaciente (
         String telefone,
 
         @NotBlank
-        @Pattern(regexp = "\\d{11}")//definindo que  tem que ter 11 dígitos
+        @Pattern(regexp = "\\d{3}\\.\\d{3}\\.\\d{3}\\-\\d{2}")//definindo que  tem que ter 11 dígitos
         String cpf,
 
         @NotNull
