@@ -36,6 +36,7 @@ public class SecurityConfigurations {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS)) //desabilitar processo de autenticação statefull.authorizeHttpRequests(req -> {
                         .authorizeHttpRequests(req -> {
                             req.requestMatchers(HttpMethod.POST, "/login").permitAll();
+                            req.requestMatchers("/v3/api-docs/**", "/swagger-ui.html", "/swagger-ui/**").permitAll();//para acessar a documentação do springdoc
                             req.anyRequest().authenticated();
                         })
                         .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class)
